@@ -36,8 +36,8 @@ class ControllerStep2 extends Controller {
 	}
 	
 	private function validate() {
-		if (phpversion() < '5.0') {
-			$this->error['warning'] = 'Warning: You need to use PHP5 or above for OpenCart to work!';
+		if (phpversion() < '7.2') {
+			$this->error['warning'] = 'Warning: You need to use PHP7.2 or above for OpenCart to work!';
 		}
 
 		if (!ini_get('file_uploads')) {
@@ -47,10 +47,10 @@ class ControllerStep2 extends Controller {
 		if (ini_get('session.auto_start')) {
 			$this->error['warning'] = 'Warning: OpenCart will not work with session.auto_start enabled!';
 		}
-		
-		if (!extension_loaded('mysql')) {
-			$this->error['warning'] = 'Warning: MySQL extension needs to be loaded for OpenCart to work!';
-		}
+
+        if (!extension_loaded('mysqli')) {
+            $this->error['warning'] = 'Warning: MySQLi extension needs to be loaded for OpenCart to work!';
+        }
 				
 		if (!extension_loaded('gd')) {
 			$this->error['warning'] = 'Warning: GD extension needs to be loaded for OpenCart to work!';
@@ -60,10 +60,10 @@ class ControllerStep2 extends Controller {
 			$this->error['warning'] = 'Warning: CURL extension needs to be loaded for OpenCart to work!';
 		}
 
-		if (!function_exists('mcrypt_encrypt')) {
-			$this->error['warning'] = 'Warning: mCrypt extension needs to be loaded for OpenCart to work!';
-		}
-				
+        if (!function_exists('openssl_encrypt')) {
+            $this->error['warning'] = 'Warning: OpenSSL extension needs to be loaded for OpenCart to work!';
+        }
+
 		if (!extension_loaded('zlib')) {
 			$this->error['warning'] = 'Warning: ZLIB extension needs to be loaded for OpenCart to work!';
 		}

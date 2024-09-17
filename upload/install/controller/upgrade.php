@@ -51,34 +51,33 @@ class ControllerUpgrade extends Controller {
 
 	}
 
-	private function validate() {
-		if (!defined('DB_HOSTNAME')) {
-			$this->error['warning'] = 'Host required!';
-		}
+    private function validate() {
+        if (!defined('DB_HOSTNAME')) {
+            $this->error['warning'] = 'Host required!';
+        }
 
-		if (!defined('DB_USERNAME')) {
-			$this->error['warning'] = 'User required!';
-		}
+        if (!defined('DB_USERNAME')) {
+            $this->error['warning'] = 'User required!';
+        }
 
-		if (!defined('DB_DATABASE')) {
-			$this->error['warning'] = 'Database Name required!';
-		}
+        if (!defined('DB_DATABASE')) {
+            $this->error['warning'] = 'Database Name required!';
+        }
 
-		if (!$connection = @mysql_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD)) {
-			$this->error['warning'] = 'Error: Could not connect to the database please make sure the database server, username and password is correct in the config.php file!';
-		} else {
-			if (!@mysql_select_db(DB_DATABASE, $connection)) {
-				$this->error['warning'] = 'Error: Database "'. DB_DATABASE . '" does not exist!';
-			}
+        $connection = @mysqli_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD);
 
-			mysql_close($connection);
-		}
+        if (!$connection) {
+            $this->error['warning'] = 'Error: Could not connect to the database. Please make sure the database server, username, and password are correct in the config.php file!';
+        } else {
+            if (!@mysqli_select_db($connection, DB_DATABASE)) {
+                $this->error['warning'] = 'Error: Database "' . DB_DATABASE . '" does not exist!';
+            }
 
-    	if (!$this->error) {
-      		return true;
-    	} else {
-      		return false;
-    	}
-	}
+            mysqli_close($connection);
+        }
+
+        return empty($this->error);
+    }
+
 }
 ?>

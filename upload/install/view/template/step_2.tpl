@@ -18,8 +18,8 @@
           <tr>
             <td>PHP Version:</td>
             <td><?php echo phpversion(); ?></td>
-            <td>5.0+</td>
-            <td align="center"><?php echo (phpversion() >= '5.0') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
+            <td>7.2+</td>
+            <td align="center"><?php echo (phpversion() >= '7.2') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
           </tr>
           <tr>
             <td>Register Globals:</td>
@@ -57,10 +57,10 @@
             <th width="15%" align="center"><b>Status</b></th>
           </tr>
           <tr>
-            <td>MySQL:</td>
-            <td><?php echo extension_loaded('mysql') ? 'On' : 'Off'; ?></td>
+            <td>MySQLi:</td>
+            <td><?php echo extension_loaded('mysqli') ? 'On' : 'Off'; ?></td>
             <td>On</td>
-            <td align="center"><?php echo extension_loaded('mysql') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
+            <td align="center"><?php echo extension_loaded('mysqli') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
           </tr>
           <tr>
             <td>GD:</td>
@@ -75,10 +75,10 @@
             <td align="center"><?php echo extension_loaded('curl') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
           </tr>
           <tr>
-            <td>mCrypt:</td>
-            <td><?php echo function_exists('mcrypt_encrypt') ? 'On' : 'Off'; ?></td>
+            <td>OpenSSL:</td>
+            <td><?php echo extension_loaded('openssl') ? 'On' : 'Off'; ?></td>
             <td>On</td>
-            <td align="center"><?php echo function_exists('mcrypt_encrypt') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
+            <td align="center"><?php echo extension_loaded('openssl') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
           </tr>          
           <tr>
             <td>ZIP:</td>

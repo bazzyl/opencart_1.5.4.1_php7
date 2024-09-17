@@ -7,11 +7,11 @@ final class Postgre {
       		trigger_error('Error: Could not make a database link using ' . $username . '@' . $hostname);
     	}
 
-    	if (!mysql_select_db($database, $this->link)) {
-      		trigger_error('Error: Could not connect to database ' . $database);
-    	}
-		
-		pg_query($this->link, "SET CLIENT_ENCODING TO 'UTF8'");
+        if (!mysqli_select_db($this->link, $database)) {
+            trigger_error('Error: Could not connect to database ' . $database);
+        }
+
+        pg_query($this->link, "SET CLIENT_ENCODING TO 'UTF8'");
   	}
 		
   	public function query($sql) {

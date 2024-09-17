@@ -122,7 +122,9 @@ if (!function_exists('json_decode')) {
 
 		$json = strtr($json, $m2s);
 
-		$function = @create_function('', "return {$json};");
+        $function = function() use ($json) {
+            return $json;
+        };
 		$return = ($function) ? $function() : null;
 
 		unset($s2m); 

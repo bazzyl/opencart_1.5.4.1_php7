@@ -5,12 +5,12 @@ class ModelUpgrade extends Model {
 		
 		error_reporting(E_ALL);
 
-		$connection = mysql_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD);
+        $connection = mysqli_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD);
 
-		mysql_select_db(DB_DATABASE, $connection);
+        mysqli_select_db($connection, DB_DATABASE);
 
-		mysql_query("SET NAMES 'utf8'", $connection);
-		mysql_query("SET CHARACTER SET utf8", $connection);
+        mysqli_query($connection, "SET NAMES 'utf8'");
+        mysqli_query($connection, "SET CHARACTER SET utf8");
 
 		$file = DIR_APPLICATION . $sqlfile;
 
@@ -40,44 +40,44 @@ class ModelUpgrade extends Model {
 					// For example, ALTER TABLE will error if the table has since been removed,
 					// So validate the table exists first, etc.
 					if (preg_match('/^ALTER TABLE (.+?) ADD PRIMARY KEY/', $line, $matches)) {
-						$info = mysql_fetch_assoc(mysql_query(sprintf("SHOW KEYS FROM %s", $matches[1]), $connection));
-						
-						if ($info['Key_name'] == 'PRIMARY') { 
+                        $info = mysqli_fetch_assoc(mysqli_query($connection, sprintf("SHOW KEYS FROM %s", $matches[1])));
+
+                        if ($info['Key_name'] == 'PRIMARY') { 
 							continue; 
 						}
 					}
 					if (preg_match('/^ALTER TABLE (.+?) ADD INDEX (.+?) /', $line, $matches)) {
-						$info = mysql_fetch_assoc(mysql_query(sprintf("SHOW INDEX FROM %s", $matches[1]), $connection));
-						
-						if ($info['Key_name'] == 'PRIMARY') { 
+                        $info = mysqli_fetch_assoc(mysqli_query($connection, sprintf("SHOW INDEX FROM %s", $matches[1])));
+
+                        if ($info['Key_name'] == 'PRIMARY') {
 							continue; 
 						}
 					}
 					if (preg_match('/^ALTER TABLE (.+?) ADD PRIMARY KEY/', $line, $matches)) {
-						$info = mysql_fetch_assoc(mysql_query(sprintf("SHOW KEYS FROM %s",$matches[1]), $connection));
-						
+						$info = mysqli_fetch_assoc(mysqli_query($connection, sprintf("SHOW KEYS FROM %s",$matches[1])));
+
 						if ($info['Key_name'] == 'PRIMARY') { 
 							continue; 
 						}
 					}
 					if (preg_match('/^ALTER TABLE (.+?) ADD (.+?) /', $line, $matches)) {
-						if (@mysql_num_rows(@mysql_query(sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])), $connection)) > 0) { 
+						if (@mysqli_num_rows(@mysqli_query($connection, sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])))) > 0) {
 							continue; 
 						}
 					}
 					if (preg_match('/^ALTER TABLE (.+?) DROP (.+?) /', $line, $matches)) {
-						if (@mysql_num_rows(@mysql_query(sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])), $connection)) <= 0) { 
+						if (@mysqli_num_rows(@mysqli_query($connection, sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])))) <= 0) {
 							continue; 
 						}
 					}
 					if (preg_match('/^ALTER TABLE ([^\s]+) DEFAULT (.+?) /', $line, $matches)) {
-						if (@mysql_num_rows(@mysql_query(sprintf("SHOW TABLES LIKE '%s'", str_replace('`', '', $matches[1])), $connection)) <= 0) { 
+						if (@mysqli_num_rows(@mysqli_query($connection, sprintf("SHOW TABLES LIKE '%s'", str_replace('`', '', $matches[1])))) <= 0) {
 							continue; 
 						}
 					}
 					
 					if (preg_match('/^ALTER TABLE (.+?) MODIFY (.+?) /', $line, $matches)) {
-						if (@mysql_num_rows(@mysql_query(sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])), $connection)) <= 0) { 
+						if (@mysqli_num_rows(@mysqli_query($connection, sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])))) <= 0) {
 							continue; 
 						}
 					}
@@ -86,14 +86,14 @@ class ModelUpgrade extends Model {
 						$params = explode(' ', $line);
 						
 						if ($params[3] == 'DROP') {
-							if (@mysql_num_rows(@mysql_query(sprintf("SHOW COLUMNS FROM $params[2] LIKE '$params[4]'", $matches[1],str_replace('`', '', $matches[2])), $connection)) <= 0) { 
+							if (@mysqli_num_rows(@mysqli_query($connection, sprintf("SHOW COLUMNS FROM $params[2] LIKE '$params[4]'", $matches[1],str_replace('`', '', $matches[2])))) <= 0) {
 								continue;
 							}
 						}
 					}
 					
 					if (preg_match('/^ALTER TABLE (.+?) MODIFY (.+?) /', $line, $matches)) {
-						if (@mysql_num_rows(@mysql_query(sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])), $connection)) <= 0) { 
+						if (@mysqli_num_rows(@mysqli_query($connection, sprintf("SHOW COLUMNS FROM %s LIKE '%s'", $matches[1],str_replace('`', '', $matches[2])))) <= 0) {
 							continue;
 						}
 					}
@@ -106,10 +106,10 @@ class ModelUpgrade extends Model {
 						$query = str_replace("CREATE TABLE `oc_", "CREATE TABLE `" . DB_PREFIX, $query);
 						$query = str_replace("INSERT INTO `oc_", "INSERT INTO `" . DB_PREFIX, $query);
 
-						$result = mysql_query($query, $connection);
+						$result = mysqli_query($connection, $query);
 
 						if (!$result) {
-							die("Could not Execute: $query <br />" . mysql_error());
+							die("Could not Execute: $query <br />" . mysqli_error($connection));
 						}
 
 						$query = '';
@@ -117,10 +117,10 @@ class ModelUpgrade extends Model {
 				}
 			}
 
-			mysql_query("SET CHARACTER SET utf8", $connection);
-			mysql_query("SET @@session.sql_mode = 'MYSQL40'", $connection);
+			mysqli_query($connection, "SET CHARACTER SET utf8");
+			mysqli_query($connection, "SET @@session.sql_mode = 'MYSQL40'");
 
-			mysql_close($connection);
+			mysqli_close($connection);
 		}
 	}
 

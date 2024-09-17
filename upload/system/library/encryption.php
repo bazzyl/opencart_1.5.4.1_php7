@@ -1,19 +1,22 @@
 <?php
 final class Encryption {
-	private $key;
-	private $iv;
-	
-	public function __construct($key) {
+    private $key;
+    private $iv;
+
+    public function __construct($key) {
         $this->key = hash('sha256', $key, true);
-		$this->iv = mcrypt_create_iv(32, MCRYPT_RAND);
-	}
-	
-	public function encrypt($value) {
-		return strtr(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $this->key, $value, MCRYPT_MODE_ECB, $this->iv)), '+/=', '-_,');
-	}
-	
-	public function decrypt($value) {
-		return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->key, base64_decode(strtr($value, '-_,', '+/=')), MCRYPT_MODE_ECB, $this->iv));
-	}
+        $this->iv = openssl_random_pseudo_bytes(16);
+    }
+
+    public function encrypt($value) {
+        $encrypted = openssl_encrypt($value, 'aes-256-cbc', $this->key, OPENSSL_RAW_DATA, $this->iv);
+        return strtr(base64_encode($this->iv . $encrypted), '+/=', '-_,');
+    }
+
+    public function decrypt($value) {
+        $data = base64_decode(strtr($value, '-_,', '+/='));
+        $iv = substr($data, 0, 16);
+        $encrypted = substr($data, 16);
+        return trim(openssl_decrypt($encrypted, 'aes-256-cbc', $this->key, OPENSSL_RAW_DATA, $iv));
+    }
 }
-?>

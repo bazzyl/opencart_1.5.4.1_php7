@@ -213,16 +213,16 @@ class ControllerStep3 extends Controller {
 			$this->error['email'] = 'Invalid E-Mail!';
 		}
 
-		if (!$connection = @mysql_connect($this->request->post['db_host'], $this->request->post['db_user'], $this->request->post['db_password'])) {
-			$this->error['warning'] = 'Error: Could not connect to the database please make sure the database server, username and password is correct!';
-		} else {
-			if (!@mysql_select_db($this->request->post['db_name'], $connection)) {
-				$this->error['warning'] = 'Error: Database does not exist!';
-			}
-			
-			mysql_close($connection);
-		}
-		
+        if (!$connection = @mysqli_connect($this->request->post['db_host'], $this->request->post['db_user'], $this->request->post['db_password'])) {
+            $this->error['warning'] = 'Error: Could not connect to the database. Please make sure the database server, username, and password are correct!';
+        } else {
+            if (!@mysqli_select_db($connection, $this->request->post['db_name'])) {
+                $this->error['warning'] = 'Error: Database does not exist!';
+            }
+
+            mysqli_close($connection);
+        }
+
 		if (!is_writable(DIR_OPENCART . 'config.php')) {
 			$this->error['warning'] = 'Error: Could not write to config.php please check you have set the correct permissions on: ' . DIR_OPENCART . 'config.php!';
 		}
